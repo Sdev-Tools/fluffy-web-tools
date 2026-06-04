@@ -209,7 +209,10 @@ ${header("")}
           <h2>ツール一覧</h2>
           <p>検索してEnter、または行を選択して開きます。</p>
         </div>
-        <span id="result-count">${tools.length} tools</span>
+        <div class="result-header-actions">
+          <span id="result-count">${tools.length} tools</span>
+          <button class="btn-secondary btn-share" type="button" data-share-page>共有</button>
+        </div>
       </div>
       ${ad("ad-home-mid", "トップページ広告")}
       <section class="tool-directory" id="tool-directory" aria-label="ツール一覧"></section>
@@ -254,6 +257,8 @@ ${header(prefix)}
       <p>${tool.description}</p>
     </div>
     <div class="tool-heading-actions">
+      <button class="btn-secondary btn-share" type="button" data-share-page>ページ共有</button>
+      <button class="btn-secondary btn-share" type="button" data-share-result>結果共有</button>
       <button class="btn-secondary favorite-toggle" type="button" data-favorite-id="${tool.id}" aria-pressed="false"><span>☆</span> お気に入り</button>
       <a class="btn-secondary" href="${prefix}index.html#${category.id}">同カテゴリへ戻る</a>
     </div>
@@ -379,15 +384,18 @@ body.search-docked .quick-search-dock, .quick-search-dock:focus-within { transfo
 .result-header { display: flex; align-items: end; justify-content: space-between; gap: 14px; margin-bottom: 12px; }
 .result-header h2 { margin: 0; font-size: 1.2rem; }
 .result-header p { margin: 2px 0 0; color: var(--muted); font-size: 0.9rem; }
+.result-header-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
 #result-count { color: var(--muted); font-size: 0.88rem; white-space: nowrap; }
+.btn-share { min-height: 34px; padding: 6px 10px; }
 .tool-directory { display: grid; gap: 18px; padding: 8px 0 0; }
 .category-section { scroll-margin-top: 88px; }
 .tool-page { padding: 20px 0 48px; }
 .breadcrumb { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 0.9rem; }
 .breadcrumb > * + *::before { content: "/"; margin-right: 8px; color: #9a9388; }
 .tool-heading { display: flex; justify-content: space-between; gap: 24px; align-items: end; padding: 18px 0 8px; border-bottom: 1px solid var(--line); }
+.tool-heading > div:first-child { min-width: 0; }
 .tool-heading h1 { margin: 4px 0 8px; font-size: clamp(1.7rem, 4vw, 2.45rem); line-height: 1.12; }
-.tool-heading p { max-width: 760px; margin: 0; color: var(--muted); }
+.tool-heading p { max-width: 760px; margin: 0; color: var(--muted); overflow-wrap: anywhere; }
 .tool-heading-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
 .related-section { margin-top: 24px; padding-top: 22px; border-top: 1px solid var(--line); }
 .use-cases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0; list-style: none; }
@@ -406,6 +414,7 @@ body.search-docked .quick-search-dock, .quick-search-dock:focus-within { transfo
   .category-rail { position: static; display: flex; flex-wrap: wrap; overflow: visible; }
   .category-rail button { flex: 1 1 106px; width: auto; min-width: 0; }
   .result-header { align-items: flex-start; flex-direction: column; }
+  .result-header-actions { width: 100%; justify-content: space-between; }
   .tool-heading { align-items: flex-start; flex-direction: column; }
   .use-cases { grid-template-columns: 1fr; }
   .site-footer { align-items: flex-start; flex-direction: column; }
@@ -415,6 +424,8 @@ body.search-docked .quick-search-dock, .quick-search-dock:focus-within { transfo
   .nav { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px 10px; }
   .command-hub { padding: 16px; overflow: hidden; }
   .command-search input { min-width: 0; min-height: 48px; }
+  .tool-heading-actions { display: grid; grid-template-columns: 1fr; width: 100%; }
+  .tool-heading-actions .btn-secondary { display: inline-flex; align-items: center; justify-content: center; width: 100%; min-width: 0; padding-inline: 8px; text-align: center; white-space: normal; overflow-wrap: anywhere; }
   .category-rail { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .category-rail button { width: 100%; }
   .mobile-search-button { position: fixed; left: 14px; right: 14px; bottom: 14px; z-index: 40; display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 14px; border: 1px solid #916729; border-radius: 6px; color: #202522; background: #d49a3a; font-weight: 900; box-shadow: var(--shadow); }
@@ -533,6 +544,98 @@ async function copyText(text) {
     area.remove();
     showToast("コピーしました");
   }
+}
+
+function compactShareText(text, maxLength = 6000) {
+  const value = String(text || "").replace(/\\n{3,}/g, "\\n\\n").trim();
+  return value.length > maxLength ? value.slice(0, maxLength) + "\\n\\n...(長い結果のため一部のみ)" : value;
+}
+
+async function sharePayload(payload) {
+  const data = {
+    title: payload.title || document.title,
+    text: payload.text || "",
+    url: payload.url || location.href
+  };
+  if (navigator.share) {
+    try {
+      await navigator.share(data);
+      return;
+    } catch (error) {
+      if (error && error.name === "AbortError") return;
+    }
+  }
+  copyText([data.title, data.text, data.url].filter(Boolean).join("\\n"));
+}
+
+function shareCurrentPage() {
+  const description = document.querySelector('meta[name="description"]')?.content || "";
+  sharePayload({ title: document.title, text: description, url: location.href });
+}
+
+function visibleNodeText(node) {
+  if (!node) return "";
+  const style = window.getComputedStyle(node);
+  if (style.display === "none" || style.visibility === "hidden") return "";
+  return (node.value ?? node.textContent ?? "").trim();
+}
+
+function collectToolResultText() {
+  const root = document.getElementById("tool-root") || document;
+  const output = [...root.querySelectorAll("#output-text, textarea.output-readonly")]
+    .map(visibleNodeText)
+    .find(Boolean);
+  if (output) return compactShareText(output);
+
+  const stats = [...root.querySelectorAll(".stat-card")].map((card) => {
+    const label = card.querySelector(".stat-label")?.textContent?.trim();
+    const value = card.querySelector(".stat-num")?.textContent?.trim();
+    return label && value ? label + ": " + value : "";
+  }).filter(Boolean);
+  if (stats.length) return compactShareText(stats.join("\\n"));
+
+  const dataOutputs = [...root.querySelectorAll("[data-output]")].map(visibleNodeText).filter(Boolean);
+  if (dataOutputs.length) return compactShareText(dataOutputs.join("\\n\\n"));
+
+  const panels = [...root.querySelectorAll(".result-panel:not(.tool-note), .preview-box")]
+    .map(visibleNodeText)
+    .filter((text) => text && text !== "SVGを入力してください");
+  if (panels.length) return compactShareText(panels.join("\\n\\n"));
+
+  const colors = [...root.querySelectorAll("[data-color]")].map((node) => node.dataset.color).filter(Boolean);
+  if (colors.length) return compactShareText(colors.join("\\n"));
+
+  const canvas = root.querySelector("canvas");
+  if (canvas && canvas.width && canvas.height) return "画像またはキャンバスの結果を生成しました。ページで確認できます。";
+  return "";
+}
+
+function shareToolResult() {
+  const tool = getToolById(document.body.dataset.toolId);
+  const result = collectToolResultText();
+  if (!result) {
+    showToast("共有できる結果がまだありません");
+    return;
+  }
+  const name = tool ? tool.name : "ツール";
+  sharePayload({
+    title: name + "の結果 | すぐツール",
+    text: name + "の結果\\n\\n" + result,
+    url: location.href
+  });
+}
+
+function bindShareButtons() {
+  document.querySelectorAll("[data-share-page]").forEach((button) => {
+    if (button.dataset.shareBound) return;
+    button.dataset.shareBound = "true";
+    button.addEventListener("click", shareCurrentPage);
+  });
+  document.querySelectorAll("[data-share-result]").forEach((button) => {
+    if (button.dataset.shareBound) return;
+    button.dataset.shareBound = "true";
+    button.addEventListener("click", shareToolResult);
+  });
 }
 
 function copyToClipboard(elementId) {
@@ -676,6 +779,7 @@ function bindFavoriteButtons(afterToggle) {
 
 function initToolChrome(id) {
   bindFavoriteButtons();
+  bindShareButtons();
   trackToolUse(id);
 }
 
@@ -778,6 +882,7 @@ function initHome() {
   }
 
   renderHomeDirectory();
+  bindShareButtons();
   filter();
 
   if (search) {

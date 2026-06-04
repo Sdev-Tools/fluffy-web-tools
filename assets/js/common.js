@@ -26,6 +26,98 @@ async function copyText(text) {
   }
 }
 
+function compactShareText(text, maxLength = 6000) {
+  const value = String(text || "").replace(/\n{3,}/g, "\n\n").trim();
+  return value.length > maxLength ? value.slice(0, maxLength) + "\n\n...(長い結果のため一部のみ)" : value;
+}
+
+async function sharePayload(payload) {
+  const data = {
+    title: payload.title || document.title,
+    text: payload.text || "",
+    url: payload.url || location.href
+  };
+  if (navigator.share) {
+    try {
+      await navigator.share(data);
+      return;
+    } catch (error) {
+      if (error && error.name === "AbortError") return;
+    }
+  }
+  copyText([data.title, data.text, data.url].filter(Boolean).join("\n"));
+}
+
+function shareCurrentPage() {
+  const description = document.querySelector('meta[name="description"]')?.content || "";
+  sharePayload({ title: document.title, text: description, url: location.href });
+}
+
+function visibleNodeText(node) {
+  if (!node) return "";
+  const style = window.getComputedStyle(node);
+  if (style.display === "none" || style.visibility === "hidden") return "";
+  return (node.value ?? node.textContent ?? "").trim();
+}
+
+function collectToolResultText() {
+  const root = document.getElementById("tool-root") || document;
+  const output = [...root.querySelectorAll("#output-text, textarea.output-readonly")]
+    .map(visibleNodeText)
+    .find(Boolean);
+  if (output) return compactShareText(output);
+
+  const stats = [...root.querySelectorAll(".stat-card")].map((card) => {
+    const label = card.querySelector(".stat-label")?.textContent?.trim();
+    const value = card.querySelector(".stat-num")?.textContent?.trim();
+    return label && value ? label + ": " + value : "";
+  }).filter(Boolean);
+  if (stats.length) return compactShareText(stats.join("\n"));
+
+  const dataOutputs = [...root.querySelectorAll("[data-output]")].map(visibleNodeText).filter(Boolean);
+  if (dataOutputs.length) return compactShareText(dataOutputs.join("\n\n"));
+
+  const panels = [...root.querySelectorAll(".result-panel:not(.tool-note), .preview-box")]
+    .map(visibleNodeText)
+    .filter((text) => text && text !== "SVGを入力してください");
+  if (panels.length) return compactShareText(panels.join("\n\n"));
+
+  const colors = [...root.querySelectorAll("[data-color]")].map((node) => node.dataset.color).filter(Boolean);
+  if (colors.length) return compactShareText(colors.join("\n"));
+
+  const canvas = root.querySelector("canvas");
+  if (canvas && canvas.width && canvas.height) return "画像またはキャンバスの結果を生成しました。ページで確認できます。";
+  return "";
+}
+
+function shareToolResult() {
+  const tool = getToolById(document.body.dataset.toolId);
+  const result = collectToolResultText();
+  if (!result) {
+    showToast("共有できる結果がまだありません");
+    return;
+  }
+  const name = tool ? tool.name : "ツール";
+  sharePayload({
+    title: name + "の結果 | すぐツール",
+    text: name + "の結果\n\n" + result,
+    url: location.href
+  });
+}
+
+function bindShareButtons() {
+  document.querySelectorAll("[data-share-page]").forEach((button) => {
+    if (button.dataset.shareBound) return;
+    button.dataset.shareBound = "true";
+    button.addEventListener("click", shareCurrentPage);
+  });
+  document.querySelectorAll("[data-share-result]").forEach((button) => {
+    if (button.dataset.shareBound) return;
+    button.dataset.shareBound = "true";
+    button.addEventListener("click", shareToolResult);
+  });
+}
+
 function copyToClipboard(elementId) {
   const element = document.getElementById(elementId);
   copyText(element ? (element.value ?? element.textContent) : "");
@@ -167,6 +259,7 @@ function bindFavoriteButtons(afterToggle) {
 
 function initToolChrome(id) {
   bindFavoriteButtons();
+  bindShareButtons();
   trackToolUse(id);
 }
 
@@ -269,6 +362,7 @@ function initHome() {
   }
 
   renderHomeDirectory();
+  bindShareButtons();
   filter();
 
   if (search) {
