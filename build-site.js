@@ -103,15 +103,18 @@ function head({ title, description, canonical, prefix = "", extraScripts = [] })
 </head>`;
 }
 
-function header(prefix = "") {
+function header(prefix = "", options = {}) {
   return `<header class="site-header">
   <a class="brand" href="${prefix}index.html" aria-label="すぐツール ホーム">
     <span class="brand-mark" aria-hidden="true"><span class="kana-su">す</span><span class="kana-gu">ぐ</span></span>
     <span class="brand-copy"><span class="brand-text">すぐツール</span><span class="brand-tagline">無料で使える静的WEBツール集。ブラウザ内で処理し、入力内容をサーバーへ送信しません</span></span>
   </a>
-  <nav class="nav" aria-label="カテゴリ">
-    ${categories.map((category) => `<a href="${prefix}index.html#${category.id}">${category.name}</a>`).join("")}
-  </nav>
+  <div class="header-actions">
+    <nav class="nav" aria-label="カテゴリ">
+      ${categories.map((category) => `<a href="${prefix}index.html#${category.id}">${category.name}</a>`).join("")}
+    </nav>
+    ${options.share ? `<button class="nav-share" type="button" data-share-page aria-label="トップページを共有"><svg class="share-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.7 10.7 15.3 6.3"></path><path d="M8.7 13.3 15.3 17.7"></path></svg><span>共有</span></button>` : ""}
+  </div>
 </header>`;
 }
 
@@ -174,7 +177,7 @@ function indexPage() {
   const description = `文字数カウント、Base64変換、QRコード生成、カラー変換など${tools.length}種類の無料オンラインツールをブラウザだけで使えます。`;
   return `${head({ title, description, canonical: siteUrl + "/", prefix: "" })}
 <body>
-${header("")}
+${header("", { share: true })}
 <main class="palette-page">
   <section class="command-hub" aria-label="ツール検索">
     <div class="command-heading">
@@ -209,10 +212,7 @@ ${header("")}
           <h2>ツール一覧</h2>
           <p>検索してEnter、または行を選択して開きます。</p>
         </div>
-        <div class="result-header-actions">
-          <span id="result-count">${tools.length} tools</span>
-          <button class="btn-secondary btn-share" type="button" data-share-page>共有</button>
-        </div>
+        <span id="result-count">${tools.length} tools</span>
       </div>
       ${ad("ad-home-mid", "トップページ広告")}
       <section class="tool-directory" id="tool-directory" aria-label="ツール一覧"></section>
@@ -356,9 +356,13 @@ const layoutCss = `
 .brand-copy { display: grid; gap: 0; min-width: 0; }
 .brand-text { white-space: nowrap; font-size: 1.05rem; line-height: 1.2; }
 .brand-tagline { max-width: min(58vw, 560px); color: var(--muted); font-size: 0.68rem; font-weight: 700; line-height: 1.35; white-space: normal; }
+.header-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
 .nav { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 2px; }
 .nav a { padding: 6px 8px; border-radius: 4px; color: var(--muted); font-size: 0.88rem; }
 .nav a:hover { color: var(--text); background: var(--surface-2); }
+.nav-share { display: inline-flex; align-items: center; gap: 5px; min-height: 32px; padding: 5px 9px; border: 1px solid #cfc5b6; border-radius: 6px; color: var(--text); background: #fbfbf5; font-size: 0.84rem; font-weight: 850; white-space: nowrap; }
+.share-icon { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.nav-share:hover { background: var(--surface-2); }
 .palette-page { padding-bottom: 92px; }
 .command-hub { display: grid; grid-template-columns: minmax(220px, 0.7fr) minmax(360px, 1.3fr); gap: 28px; align-items: center; max-width: 100%; margin-top: 22px; padding: 26px; border: 1px solid #334239; border-radius: var(--radius); color: #f4f2e8; background: #1f2923; }
 .command-heading h1 { margin: 4px 0 8px; font-size: clamp(1.9rem, 4vw, 3rem); line-height: 1.12; }
@@ -384,7 +388,6 @@ body.search-docked .quick-search-dock, .quick-search-dock:focus-within { transfo
 .result-header { display: flex; align-items: end; justify-content: space-between; gap: 14px; margin-bottom: 12px; }
 .result-header h2 { margin: 0; font-size: 1.2rem; }
 .result-header p { margin: 2px 0 0; color: var(--muted); font-size: 0.9rem; }
-.result-header-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
 #result-count { color: var(--muted); font-size: 0.88rem; white-space: nowrap; }
 .btn-share { min-height: 34px; padding: 6px 10px; }
 .tool-directory { display: grid; gap: 18px; padding: 8px 0 0; }
@@ -406,6 +409,7 @@ body.search-docked .quick-search-dock, .quick-search-dock:focus-within { transfo
 @media (max-width: 880px) {
   main { width: min(100% - 24px, 1160px); }
   .site-header { position: static; align-items: flex-start; flex-direction: column; }
+  .header-actions { display: grid; grid-template-columns: minmax(0, 1fr) auto; width: 100%; align-items: start; }
   .nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); width: 100%; justify-content: flex-start; gap: 2px 8px; overflow: visible; padding-bottom: 2px; }
   .nav a { min-width: 0; padding: 4px 0; font-size: 0.84rem; }
   .command-hub { grid-template-columns: 1fr; gap: 18px; margin-top: 14px; padding: 18px; }
@@ -414,14 +418,15 @@ body.search-docked .quick-search-dock, .quick-search-dock:focus-within { transfo
   .category-rail { position: static; display: flex; flex-wrap: wrap; overflow: visible; }
   .category-rail button { flex: 1 1 106px; width: auto; min-width: 0; }
   .result-header { align-items: flex-start; flex-direction: column; }
-  .result-header-actions { width: 100%; justify-content: space-between; }
   .tool-heading { align-items: flex-start; flex-direction: column; }
   .use-cases { grid-template-columns: 1fr; }
   .site-footer { align-items: flex-start; flex-direction: column; }
 }
 @media (max-width: 680px) {
   .site-header { padding: 10px 12px; }
+  .header-actions { grid-template-columns: 1fr; }
   .nav { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px 10px; }
+  .nav-share { justify-self: start; }
   .command-hub { padding: 16px; overflow: hidden; }
   .command-search input { min-width: 0; min-height: 48px; }
   .tool-heading-actions { display: grid; grid-template-columns: 1fr; width: 100%; }
