@@ -3,6 +3,8 @@ const path = require("path");
 
 const root = __dirname;
 const siteUrl = "https://sdev-tools.github.io/fluffy-web-tools";
+const adsenseClient = "ca-pub-1287644154625165";
+const adsenseSlot = "2236305778";
 
 const categories = [
   { id: "text", name: "テキスト", icon: "字", color: "#3e6671" },
@@ -91,6 +93,7 @@ function head({ title, description, canonical, prefix = "", extraScripts = [] })
   <meta property="og:type" content="website">
   <meta property="og:image" content="${siteUrl}/assets/img/tool-constellation.svg">
   <link rel="icon" href="${prefix}assets/img/favicon.svg?v=orange-sugu" type="image/svg+xml">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="${prefix}assets/css/base.css">
   <link rel="stylesheet" href="${prefix}assets/css/layout.css">
   <link rel="stylesheet" href="${prefix}assets/css/card.css">
@@ -125,8 +128,13 @@ function footer(prefix = "") {
 
 function ad(slot, label = "広告") {
   return `<div class="ad-container" aria-label="${label}">
-  <span>${label}スペース</span>
-  <!-- AdSense承認後に ins.adsbygoogle を配置 -->
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="${adsenseClient}"
+       data-ad-slot="${adsenseSlot}"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 </div>`;
 }
 
@@ -842,6 +850,8 @@ function miscFiles() {
 Allow: /
 Sitemap: ${siteUrl}/sitemap.xml
 `);
+  write("ads.txt", `google.com, pub-1287644154625165, DIRECT, f08c47fec0942fa0
+`);
   write("_config.yml", `title: すぐツール
 description: 検索してすぐ使える無料オンラインツール集
 exclude:
@@ -861,13 +871,14 @@ ${tools.map((tool) => `  <url><loc>${siteUrl}/${tool.url}</loc></url>`).join("\n
 
 - トップページ: ツール検索、カテゴリフィルタ、動的カード表示
 - ツールページ: ${tools.length}種類
-- 共通機能: コピー、貼り付け、保存、AdSenseプレースホルダー、構造化データ、sitemap
+- 共通機能: コピー、貼り付け、保存、AdSense広告枠、構造化データ、sitemap、ads.txt
 
 ## GitHub Pages
 
 1. この \`web-tools/\` ディレクトリをリポジトリルートとして公開します。
 2. 独自ドメインがある場合は \`build-site.js\` の \`siteUrl\` を置き換えて再生成します。
-3. AdSense承認後、\`assets/css/ads.css\` の枠に合わせて各HTML内の広告コメントを \`ins.adsbygoogle\` に差し替えます。
+3. AdSense広告コードは \`build-site.js\` の \`adsenseClient\` と \`adsenseSlot\` で管理します。
+4. AdSenseのads.txt確認でルートURLを求められる場合は、ユーザーページ \`https://sdev-tools.github.io/ads.txt\` 側にも同じads.txtを配置してください。
 
 ## ローカル確認
 
