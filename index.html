@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>すぐツール | 40種類の無料オンライン便利ツール</title>
+  <meta name="description" content="文字数カウント、Base64変換、QRコード生成、カラー変換など40種類の無料オンラインツールをブラウザだけで使えます。">
+  <link rel="canonical" href="https://sdev-tools.github.io/fluffy-web-tools/">
+  <meta property="og:title" content="すぐツール | 40種類の無料オンライン便利ツール">
+  <meta property="og:description" content="文字数カウント、Base64変換、QRコード生成、カラー変換など40種類の無料オンラインツールをブラウザだけで使えます。">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://sdev-tools.github.io/fluffy-web-tools/assets/img/tool-constellation.svg">
+  <link rel="icon" href="assets/img/favicon.svg?v=orange-sugu" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/card.css">
+  <link rel="stylesheet" href="assets/css/tool.css">
+  <link rel="stylesheet" href="assets/css/ads.css">
+  
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="index.html" aria-label="すぐツール ホーム">
+    <span class="brand-mark" aria-hidden="true"><span class="kana-su">す</span><span class="kana-gu">ぐ</span></span>
+    <span class="brand-copy"><span class="brand-text">すぐツール</span><span class="brand-tagline">検索してすぐ使う</span></span>
+  </a>
+  <nav class="nav" aria-label="カテゴリ">
+    <a href="index.html#text">テキスト</a><a href="index.html#encode">エンコード</a><a href="index.html#color">カラー</a><a href="index.html#developer">開発者</a><a href="index.html#converter">単位変換</a><a href="index.html#generator">生成</a><a href="index.html#image">画像</a>
+  </nav>
+</header>
+<main class="palette-page">
+  <section class="command-hub" aria-label="ツール検索">
+    <div class="command-heading">
+      <p class="eyebrow">Command Palette Hub</p>
+      <h1>何をしますか？</h1>
+      <p>ツール名、目的、形式を入力して、必要な道具にすぐ移動できます。</p>
+    </div>
+    <div class="command-search">
+      <label for="search-tools">ツールを検索</label>
+      <input id="search-tools" type="search" placeholder="例: JSON、画像圧縮、文字数、Base64" autocomplete="off" autofocus>
+      <div class="command-hints">
+        <span><kbd>Ctrl</kbd><kbd>K</kbd>で検索</span>
+        <span>カテゴリやタグでも絞り込み</span>
+      </div>
+    </div>
+  </section>
+  <div class="quick-search-dock" id="quick-search-dock" aria-label="固定検索">
+    <label for="sticky-search-tools">検索</label>
+    <input id="sticky-search-tools" type="search" placeholder="ツールを検索">
+    <span><kbd>Ctrl</kbd><kbd>K</kbd></span>
+  </div>
+  <section class="palette-workspace">
+    <aside class="category-rail" aria-label="カテゴリ">
+      <button class="active" data-filter="all"><span>すべて</span><strong>40</strong></button>
+      <button data-filter="favorites"><span>お気に入り</span><strong id="favorite-count">0</strong></button>
+      <button data-filter="recent"><span>最近使った</span><strong id="recent-count">0</strong></button>
+      <button data-filter="text"><span>テキスト</span><strong>5</strong></button><button data-filter="encode"><span>エンコード</span><strong>8</strong></button><button data-filter="color"><span>カラー</span><strong>4</strong></button><button data-filter="developer"><span>開発者</span><strong>9</strong></button><button data-filter="converter"><span>単位変換</span><strong>6</strong></button><button data-filter="generator"><span>生成</span><strong>5</strong></button><button data-filter="image"><span>画像</span><strong>3</strong></button>
+    </aside>
+    <section class="command-results">
+      <div class="result-header">
+        <div>
+          <h2>ツール一覧</h2>
+          <p>検索してEnter、または行を選択して開きます。</p>
+        </div>
+        <span id="result-count">40 tools</span>
+      </div>
+      <div class="ad-container" aria-label="トップページ広告">
+  <span>トップページ広告スペース</span>
+  <!-- AdSense承認後に ins.adsbygoogle を配置 -->
+</div>
+      <section class="tool-directory" id="tool-directory" aria-label="ツール一覧"></section>
+    </section>
+  </section>
+  <button class="mobile-search-button" id="mobile-search-button" type="button" aria-label="検索を開く">検索</button>
+</main>
+<footer class="site-footer">
+  <p>無料で使える静的WEBツール集。ブラウザ内で処理し、入力内容をサーバーへ送信しません。</p>
+  <nav aria-label="フッター">
+    <a href="index.html">トップ</a>
+    <a href="robots.txt">robots.txt</a>
+    <a href="sitemap.xml">sitemap</a>
+  </nav>
+</footer>
+<script src="assets/js/tool-registry.js"></script>
+<script src="assets/js/common.js"></script>
+<script>
+  initHome();
+</script>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "すぐツール",
+  "url": "https://sdev-tools.github.io/fluffy-web-tools/",
+  "description": "文字数カウント、Base64変換、QRコード生成、カラー変換などの無料オンラインツール集。",
+  "hasPart": [
+    {
+      "@type": "WebApplication",
+      "position": 1,
+      "name": "文字数・単語数カウント",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/text/character-count.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 2,
+      "name": "大文字・小文字変換",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/text/case-converter.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 3,
+      "name": "テキスト差分チェック",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/text/text-diff.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 4,
+      "name": "Markdownプレビュー",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/text/markdown-preview.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 5,
+      "name": "ダミーテキスト生成",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/text/lorem-ipsum.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 6,
+      "name": "Base64エンコード・デコード",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/encode/base64.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 7,
+      "name": "URLエンコード・デコード",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/encode/url-encode.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 8,
+      "name": "HTMLエンティティ変換",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/encode/html-entity.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 9,
+      "name": "JWTデコーダー",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/encode/jwt-decoder.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 10,
+      "name": "ハッシュ生成",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/encode/hash-generator.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 11,
+      "name": "YAML ⇄ JSON変換",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/encode/yaml-json.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 12,
+      "name": "CSV ⇄ JSON変換",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/encode/csv-json.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 13,
+      "name": "URLパラメータ解析",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/encode/url-params.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 14,
+      "name": "カラーピッカー",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/color/color-picker.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 15,
+      "name": "カラーコード変換",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/color/color-converter.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 16,
+      "name": "コントラスト比チェック",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/color/contrast-checker.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 17,
+      "name": "カラーパレット生成",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/color/palette-generator.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 18,
+      "name": "JSONフォーマッター",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/developer/json-formatter.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 19,
+      "name": "正規表現テスター",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/developer/regex-tester.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 20,
+      "name": "CSS圧縮",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/developer/css-minifier.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 21,
+      "name": "HTML圧縮",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/developer/html-minifier.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 22,
+      "name": "Unixタイムスタンプ変換",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/developer/timestamp-converter.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 23,
+      "name": "SVG最適化・プレビュー",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/developer/svg-optimizer.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 24,
+      "name": "Cron式ヘルパー",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/developer/cron-helper.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 25,
+      "name": "CSS clamp計算",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/developer/css-clamp.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 26,
+      "name": "OG/metaタグプレビュー",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/developer/og-preview.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 27,
+      "name": "長さの単位変換",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/converter/unit-length.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 28,
+      "name": "重さの単位変換",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/converter/unit-weight.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 29,
+      "name": "温度変換",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/converter/unit-temperature.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 30,
+      "name": "データ容量変換",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/converter/unit-data.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 31,
+      "name": "進数変換",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/converter/number-base.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 32,
+      "name": "日付差分・営業日計算",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/converter/date-calculator.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 33,
+      "name": "QRコード生成",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/generator/qr-code.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 34,
+      "name": "パスワード生成",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/generator/password.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 35,
+      "name": "UUID生成",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/generator/uuid.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 36,
+      "name": "乱数生成",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/generator/random-number.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 37,
+      "name": "プレースホルダー画像生成",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/generator/placeholder-image.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 38,
+      "name": "画像リサイズ・変換",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/image/image-resize.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 39,
+      "name": "画像圧縮・WebP変換",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/image/image-compress.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    },
+    {
+      "@type": "WebApplication",
+      "position": 40,
+      "name": "画像からカラー抽出",
+      "url": "https://sdev-tools.github.io/fluffy-web-tools/tools/image/color-picker-image.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web"
+    }
+  ]
+}</script>
+</body>
+</html>

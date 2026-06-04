@@ -1,0 +1,2 @@
+.ad-container { display: grid; place-items: center; min-height: 90px; margin: 14px 0; border: 1px dashed #b8c4ad; border-radius: var(--radius); color: #6f796b; background: rgba(251,251,245,0.58); font-size: 0.86rem; }
+.ad-container-square { min-height: 250px; }

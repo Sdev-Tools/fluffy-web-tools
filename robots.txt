@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://sdev-tools.github.io/fluffy-web-tools/sitemap.xml

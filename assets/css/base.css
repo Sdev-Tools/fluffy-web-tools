@@ -1,0 +1,34 @@
+:root {
+  color-scheme: light;
+  --bg: #eef1e8;
+  --surface: #fbfbf5;
+  --surface-2: #dfe7da;
+  --surface-3: #cbd8c3;
+  --text: #202522;
+  --muted: #667063;
+  --line: #cbd4c5;
+  --brand: #557b65;
+  --brand-2: #496f72;
+  --accent: #b88942;
+  --danger: #dc2626;
+  --ok: #057a55;
+  --warn: #b45309;
+  --radius: 5px;
+  --shadow: 0 1px 2px rgba(36, 38, 41, 0.08);
+  --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+* { box-sizing: border-box; }
+html { min-width: 320px; background: var(--bg); }
+body { margin: 0; color: var(--text); font-family: var(--font); letter-spacing: 0; line-height: 1.65; }
+h1, h2, h3, p, li, a, button, label, span { overflow-wrap: anywhere; }
+a { color: inherit; text-decoration: none; }
+button, input, textarea, select { font: inherit; }
+button { cursor: pointer; }
+img { max-width: 100%; height: auto; }
+main { width: min(1160px, calc(100% - 32px)); margin: 0 auto; }
+.eyebrow, .tool-kicker { color: var(--accent); font-size: 0.78rem; font-weight: 800; letter-spacing: 0; text-transform: uppercase; }
+.section-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 0 0 16px; }
+.section-heading h2 { margin: 0; font-size: 1.2rem; }
+.section-heading span { color: var(--muted); font-size: 0.9rem; }
+.toast { position: fixed; right: 18px; bottom: 18px; z-index: 50; max-width: min(360px, calc(100% - 36px)); padding: 12px 14px; border-radius: var(--radius); color: #fff; background: #172033; box-shadow: var(--shadow); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
