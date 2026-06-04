@@ -107,7 +107,7 @@ function header(prefix = "") {
   return `<header class="site-header">
   <a class="brand" href="${prefix}index.html" aria-label="すぐツール ホーム">
     <span class="brand-mark" aria-hidden="true"><span class="kana-su">す</span><span class="kana-gu">ぐ</span></span>
-    <span class="brand-copy"><span class="brand-text">すぐツール</span><span class="brand-tagline">検索してすぐ使う</span></span>
+    <span class="brand-copy"><span class="brand-text">すぐツール</span><span class="brand-tagline">無料で使える静的WEBツール集。ブラウザ内で処理し、入力内容をサーバーへ送信しません</span></span>
   </a>
   <nav class="nav" aria-label="カテゴリ">
     ${categories.map((category) => `<a href="${prefix}index.html#${category.id}">${category.name}</a>`).join("")}
@@ -348,9 +348,9 @@ const layoutCss = `
 .brand-mark::after { content: ""; position: absolute; inset: 3px; border: 1px solid rgba(255, 244, 218, .42); border-radius: 6px; pointer-events: none; }
 .brand-mark .kana-su { position: absolute; left: 50%; top: calc(48% + 4px); z-index: 1; transform: translate(-50%, -50%); font-family: Meiryo, "Yu Gothic UI", "Yu Gothic", system-ui, sans-serif; font-size: 1.78rem; font-weight: 950; line-height: 1; letter-spacing: 0; }
 .brand-mark .kana-gu { position: absolute; right: 5px; bottom: 5px; z-index: 1; font-family: Meiryo, "Yu Gothic UI", "Yu Gothic", system-ui, sans-serif; font-size: .52rem; font-weight: 900; line-height: 1; letter-spacing: 0; }
-.brand-copy { display: grid; gap: 0; }
+.brand-copy { display: grid; gap: 0; min-width: 0; }
 .brand-text { white-space: nowrap; font-size: 1.05rem; line-height: 1.2; }
-.brand-tagline { color: var(--muted); font-size: 0.7rem; font-weight: 700; line-height: 1.2; white-space: nowrap; }
+.brand-tagline { max-width: min(58vw, 560px); color: var(--muted); font-size: 0.68rem; font-weight: 700; line-height: 1.35; white-space: normal; }
 .nav { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 2px; }
 .nav a { padding: 6px 8px; border-radius: 4px; color: var(--muted); font-size: 0.88rem; }
 .nav a:hover { color: var(--text); background: var(--surface-2); }

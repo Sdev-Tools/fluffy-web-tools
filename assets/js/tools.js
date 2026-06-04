@@ -134,7 +134,7 @@ function initTextDiff(root) {
 function initMarkdownPreview(root) {
   root.innerHTML = `<div class="tool-panel"><div class="tool-columns">${textareaBlock("input-text", "Markdown入力", "# 見出し\n\n- リスト\n- プレビュー") }<div class="tool-output-area"><div class="output-header"><span class="output-label">HTMLプレビュー</span><button class="btn-icon" id="copy-html" type="button">HTMLコピー</button></div><div class="preview-box" id="preview"></div></div></div></div>`;
   const render = () => {
-    const source = getInput("input-text");
+    const source = safeMarkedSource(getInput("input-text"));
     $("#preview", root).innerHTML = window.marked ? marked.parse(source) : escapeHtml(source).replace(/\n/g, "<br>");
   };
   $("#input-text", root).addEventListener("input", render);
@@ -590,8 +590,13 @@ function initSvgOptimizer(root) {
   textTool(root, (text) => text.replace(/<!--[\s\S]*?-->/g, "").replace(/>\s+</g, "><").replace(/\s{2,}/g, " ").trim(), { button: "最適化する" });
   $(".tool-panel", root).insertAdjacentHTML("beforeend", `<div class="preview-box" id="svg-preview"></div>`);
   const updatePreview = () => {
-    const svg = getInput("output-text") || getInput("input-text");
-    $("#svg-preview", root).innerHTML = /^<svg[\s\S]*<\/svg>$/.test(svg.trim()) ? svg : "SVGを入力してください";
+    const safeSvg = svgToSafeImage(getInput("output-text") || getInput("input-text"));
+    if (!safeSvg) {
+      $("#svg-preview", root).textContent = "SVGを入力してください";
+      return;
+    }
+    const encoded = btoa(unescape(encodeURIComponent(safeSvg)));
+    $("#svg-preview", root).innerHTML = `<img alt="SVGプレビュー" src="data:image/svg+xml;base64,${encoded}">`;
   };
   root.addEventListener("input", updatePreview);
   $("#run-tool", root).addEventListener("click", updatePreview);
@@ -952,6 +957,24 @@ function safeMarkedSource(source) {
   return source.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
+function svgToSafeImage(svg) {
+  const text = svg.trim();
+  if (!/^<svg[\s\S]*<\/svg>$/.test(text)) return "";
+  const doc = new DOMParser().parseFromString(text, "image/svg+xml");
+  if (doc.querySelector("parsererror")) return "";
+  doc.querySelectorAll("script, foreignObject, iframe, object, embed, link, audio, video").forEach((node) => node.remove());
+  doc.querySelectorAll("*").forEach((node) => {
+    [...node.attributes].forEach((attr) => {
+      const name = attr.name.toLowerCase();
+      const value = attr.value.trim().toLowerCase();
+      if (name.startsWith("on") || value.startsWith("javascript:") || value.startsWith("data:text/html")) {
+        node.removeAttribute(attr.name);
+      }
+    });
+  });
+  return new XMLSerializer().serializeToString(doc.documentElement);
+}
+
 function initCharacterCount(root) {
   root.innerHTML = `<div class="tool-panel">
     ${textareaBlock("input-text", "入力", "文字数、単語数、行数を数えたいテキストを入力してください")}
@@ -1021,7 +1044,7 @@ function initMarkdownPreview(root) {
   root.innerHTML = `<div class="tool-panel"><div class="tool-columns">${textareaBlock("input-text", "Markdown入力", "# 見出し\n\n- リスト\n- プレビュー") }<div class="tool-output-area"><div class="output-header"><span class="output-label">HTMLプレビュー</span><button class="btn-icon" id="copy-html" type="button">HTMLコピー</button></div><div class="preview-box" id="preview"></div></div></div><p class="tool-note">安全のため入力内のHTMLタグは文字として扱います。</p></div>`;
   const render = () => {
     const source = safeMarkedSource(getInput("input-text"));
-    $("#preview", root).innerHTML = window.marked ? marked.parse(source) : source.replace(/\n/g, "<br>");
+    $("#preview", root).innerHTML = window.marked ? marked.parse(source) : escapeHtml(source).replace(/\n/g, "<br>");
   };
   $("#input-text", root).addEventListener("input", render);
   $("#copy-html", root).addEventListener("click", () => copyText($("#preview", root).innerHTML));
